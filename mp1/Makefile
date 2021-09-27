@@ -1,5 +1,5 @@
 #If you use threads, add -pthread here.
-COMPILERFLAGS = -g -Wall -Wextra -Wno-sign-compare
+COMPILERFLAGS = -g -Wall -Wextra -Wno-sign-compare -std=c++11
 
 #Any libraries you might need linked in.
 #LINKLIBS = -lm
@@ -26,7 +26,7 @@ all : obj http_server http_client
 #$^: the entire dependency string (after expansions); here, $(SERVEROBJECTS)
 #CC is a built in variable for the default C compiler; it usually defaults to "gcc". (CXX is g++).
 http_server: $(SERVEROBJECTS)
-	$(CC) $(COMPILERFLAGS) $^ -o $@ $(LINKLIBS)
+	$(CXX) $(COMPILERFLAGS) $^ -o $@ $(LINKLIBS)
 
 
 
@@ -40,7 +40,7 @@ http_server: $(SERVEROBJECTS)
 #In this case, CLIENTOBJECTS is just obj/client.o. So, if obj/client.o doesn't exist or is out of date, 
 #make will first look for a rule to build it. That rule is the 'obj/%.o' one, below; the % is a wildcard.
 http_client: $(CLIENTOBJECTS)
-	$(CC) $(COMPILERFLAGS) $^ -o $@ $(LINKLIBS)
+	$(CXX) $(COMPILERFLAGS) $^ -o $@ $(LINKLIBS)
 
 
 
@@ -54,7 +54,7 @@ clean :
 #dependency is checked, if its name matches this pattern, this rule is used. You can also use the % 
 #in your list of dependencies, and it will insert whatever characters were matched for the target name.
 obj/%.o: src/%.c
-	$(CC) $(COMPILERFLAGS) -c -o $@ $<
+	$(CXX) $(COMPILERFLAGS) -c -o $@ $<
 obj:
 	mkdir -p obj
 

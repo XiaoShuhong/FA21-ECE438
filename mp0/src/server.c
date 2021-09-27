@@ -14,12 +14,13 @@
 #include <arpa/inet.h>
 #include <sys/wait.h>
 #include <signal.h>
-#include <assert.h>
+#include <iostream>
+using namespace std;
 
 #define PORT "3490"  // the port users will be connecting to
-#define SERVERPORT "4950" // Server for talking
 
 #define BACKLOG 10	 // how many pending connections queue will hold
+#define MAXBUFSIZE 1000
 
 void sigchld_handler(int s)
 {
@@ -36,72 +37,8 @@ void *get_in_addr(struct sockaddr *sa)
 	return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-
-char* concat(const char *s1, const char *s2, const char *s3)
+int main(void)
 {
-    char *result = malloc(strlen(s1)+strlen(s2)+strlen(s3)+1);//+1 for the zero-terminator
-    //in real code you would check for errors in malloc here
-    strcpy(result, s1);
-    strcat(result, s2);
-    strcat(result, s3);
-    return result;
-}
-
-
-int main(int argc, char *argv[])
-{
-
-	if (argc != 2) {
-	    fprintf(stderr,"File Name not specified\n");
-	    exit(1);
-	}
-
-	//char ch;
-
-	FILE *fptr;
-	fptr = fopen(argv[1],"r");
-	fseek(fptr, 0, SEEK_END);
-	unsigned long len = (unsigned long)ftell(fptr);	
-	fseek (fptr, 0, SEEK_SET);
-
-	char *string = malloc(len+1);
-	fread(string,len,1,fptr);
-	string[len] = 0;
-
-	// Need to send len-1 as length 
-
-	//printf("%zu\n",len);	
-
-	const int n_temp = snprintf(NULL, 0, "%lu", len);
-	assert(n_temp > 0);
-	char buf_temp[n_temp+1];
-	int c_temp = snprintf(buf_temp, n_temp+1, "%lu", len);
-	assert(buf_temp[n_temp] == '\0');
-	assert(c_temp == n_temp);
-
-	//printf("\n\n%s\n\n",buf_temp);
-
-	if (fptr == NULL)
-        {
-    	    printf("Cannot open file \n");
-    	    exit(0);
-    	}
-
-	
-	//while(*string != '\0'){
-	//	printf("%c",*string++);
-	//}		
-
-    	fclose(fptr);	
-
-	//printf("\n\n %s \n\n", buf_temp);
-	//printf("\n\n %s", &string[0]);
-
-
-	char* result = concat(buf_temp,"\n\n\n", &string[0]);	
-
-	//printf("\n\n\nStart here\n%s",result);
-
 	int sockfd, new_fd;  // listen on sock_fd, new connection on new_fd
 	struct addrinfo hints, *servinfo, *p;
 	struct sockaddr_storage their_addr; // connector's address information
@@ -115,8 +52,9 @@ int main(int argc, char *argv[])
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE; // use my IP
-
-	if ((rv = getaddrinfo(NULL, PORT, &hints, &servinfo)) != 0) {
+///@@@@@//
+    string pport=argv[1];
+	if ((rv = getaddrinfo(NULL, pport.c_str(), &hints, &servinfo)) != 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
 		return 1;
 	}
@@ -165,6 +103,10 @@ int main(int argc, char *argv[])
 	}
 
 	printf("server: waiting for connections...\n");
+	char buf1[MAXBUFSIZE],buf2[MAXBUFSIZE];
+	string bad="HTTP/1.1 400 Bad Request\r\n\r\n";
+	string not_f="HTTP/1.1 404 Whoops, file not found\r\n\r\n";
+	string good="HTTP/1.1 200 OK\r\n\r\n";
 
 	while(1) {  // main accept() loop
 		sin_size = sizeof their_addr;
@@ -181,10 +123,49 @@ int main(int argc, char *argv[])
 
 		if (!fork()) { // this is the child process
 			close(sockfd); // child doesn't need the listener
-			if (send(new_fd,result, strlen(result), 0) == -1)
-				perror("send");
-			close(new_fd);
-			exit(0);
+			// if (send(new_fd, "Hello, world!", 13, 0) == -1)
+			// 	perror("send");
+			// close(new_fd);
+			// exit(0);
+			recv(new_fd,buf1,MAXBUFSIZE,0);
+			string my_req(buf1);
+			int pos1,pos2;
+			pos1=my_req.find("GET ");
+			pos2=my_req.find(" HTTP/1.1");
+			if(pos1==my_req.npos || pos2==my_req.npos || pos1>pos2){
+				if(send(new_fd,bad.c_str(),bad.size(), 0) == -1){
+					perror("send");
+				}
+				exit(0);
+
+			}
+			string my_path=my_req.substr(pos1+5,pos2-pos1-5);
+			FILE *f;
+			f=open(my_path,"rb");
+			if(f==NULL){
+				if(send(new_fd, not_f.c_str(),not_f.size(), 0) == -1){
+					perror("send");
+				}
+				perror("fopen");
+				exit(0);
+			}
+			else{
+				if(send(new_fd, good.c_str(),good.size(), 0) == -1){
+					perror("send");
+				}
+				exit(0);
+				int num_read;
+				while ((num_read=fread(buf2,sizeof(char),MAXBUFSIZE,f))!=0){
+					if (send(new_fd,buf2,num_read,0)==-1){
+						perror("send");
+						exit(0);
+					}
+					memset(buf2,'\0',MAXBUFSIZE);
+				}
+			}
+			fclose(f);
+
+
 		}
 		close(new_fd);  // parent doesn't need this
 	}

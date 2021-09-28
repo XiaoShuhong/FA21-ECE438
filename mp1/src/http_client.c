@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
                 fwrite(s.c_str(),sizeof(char),s.size(),f);
             }
             else if(flag==1){
-                fwrite(buf,sizeof(buf),read_num,f);
+                fwrite(buf,sizeof(char),read_num,f);
             }
 
         }

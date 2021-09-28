@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
 			get_in_addr((struct sockaddr *)&their_addr),
 			s, sizeof s);
 		printf("server: got connection from %s\n", s);
-
+		FILE *f;
 		if (!fork()) { // this is the child process
 			close(sockfd); // child doesn't need the listener
 			// if (send(new_fd, "Hello, world!", 13, 0) == -1)
@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
 			}
 			string my_path=my_req.substr(pos1+4,pos2-pos1-4);
 			cout<<my_path<<endl;
-			FILE *f;
+			
 			f=fopen(my_path.c_str(),"rb");
 			if(f==NULL){
 				if(send(new_fd, not_f.c_str(),not_f.size(), 0) == -1){
@@ -154,9 +154,11 @@ int main(int argc, char *argv[])
 			
 				if(send(new_fd, good.c_str(),good.size(), 0) == -1){
 					perror("send");
+					exit(0);
 				}
 				
 				int num_read;
+				memset(buf2,'\0',MAXBUFSIZE);  //
 				while ((num_read=fread(buf2,sizeof(char),MAXBUFSIZE,f))!=0){
 					if (send(new_fd,buf2,num_read,0)==-1){
 						perror("send");
@@ -164,9 +166,11 @@ int main(int argc, char *argv[])
 					}
 					memset(buf2,'\0',MAXBUFSIZE);
 				}
+				fclose(f);
+				close(new_fd);
 				exit(0);
 			}
-			fclose(f);
+			
 
 
 		}

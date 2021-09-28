@@ -122,7 +122,8 @@ int main(int argc, char *argv[])
     while(1){
         memset(buf,'\0',MAXDATASIZE);
         int read_num;
-        if (read_num=(recv(sockfd,buf,MAXDATASIZE,0))>0){
+        if ((read_num=recv(sockfd,buf,MAXDATASIZE,0))>0){
+            cout<<read_num<<endl;
             string s_buf=string(buf);
             int pos= s_buf.find("\r\n\r\n");
             if (flag==0 && pos!=s_buf.npos){

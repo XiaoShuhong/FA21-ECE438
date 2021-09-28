@@ -1,13 +1,12 @@
 test results:
 
--25:  wget small file from your server failed: received file had an error.
-
+ wget small file from your server succeeded!
  your client getting file from your server succeeded!
--25:  concurrency failed: one or more small files not retrieved
+ concurrency test succeeded!
 ====================
 
-version:5
-score: 50/100
-all-time best score (your current grade): 50/100
+version:6
+score: 100/100
+all-time best score (your current grade): 100/100
 
 

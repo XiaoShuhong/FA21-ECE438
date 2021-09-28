@@ -114,7 +114,9 @@ int main(int argc, char *argv[])
 	freeaddrinfo(servinfo); // all done with this structure
 
     //write my EGT
-    string GET="GET "+path+" HTTP/1.1\r\n" + "User-Agent:  Wget/1.12 (linux-bnu)\r\n"+ "Host:  "+host+':'+port+"\r\n"+"Connection:  Keep-Alive\r\n\r\n";
+    string GET="GET /"+path+" HTTP/1.1\r\n\r\n"; 
+    cout<<GET<<endl;
+    //+ "User-Agent:  Wget/1.12 (linux-bnu)\r\n"+ "Host:  "+host+':'+port+"\r\n"+"Connection:  Keep-Alive\r\n\r\n";
     send(sockfd,GET.c_str(),GET.size(),0);
     FILE *f=fopen("output","wb");
     int flag=0;

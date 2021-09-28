@@ -39,6 +39,10 @@ void *get_in_addr(struct sockaddr *sa)
 
 int main(int argc, char *argv[])
 {
+	if (argc != 2) {
+	    fprintf(stderr,"incorrect\n");
+	    exit(1);
+	}
 	int sockfd, new_fd;  // listen on sock_fd, new connection on new_fd
 	struct addrinfo hints, *servinfo, *p;
 	struct sockaddr_storage their_addr; // connector's address information
@@ -127,8 +131,13 @@ int main(int argc, char *argv[])
 			// 	perror("send");
 			// close(new_fd);
 			// exit(0);
+			memset(buf1,'\0',MAXBUFSIZE);  //
 			recv(new_fd,buf1,MAXBUFSIZE,0);
+			
 			string my_req(buf1);
+			//
+			cout<<my_req<<endl;
+			cout<<"finish head"<<endl;
 			int pos1,pos2;
 			pos1=my_req.find("GET ");
 			pos2=my_req.find(" HTTP/1.1");
@@ -139,7 +148,7 @@ int main(int argc, char *argv[])
 				exit(0);
 
 			}
-			string my_path=my_req.substr(pos1+4,pos2-pos1-4);
+			string my_path=my_req.substr(pos1+5,pos2-pos1-5);
 			cout<<my_path<<endl;
 			
 			f=fopen(my_path.c_str(),"rb");

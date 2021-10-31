@@ -1,8 +1,8 @@
 /* 
  * File:   sender_main.c
- * Author: 
+ * Author: shuhong3
  *
- * Created on 
+ * Created on 10.29
  */
 
 #include <stdio.h>

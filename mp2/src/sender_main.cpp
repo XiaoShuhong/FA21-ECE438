@@ -40,7 +40,7 @@ int s, slen;
 #define MAX_SEQ 2000
 #define RTT 20000
 #define RTO_TH 2*RTT
-#define DATA_QUEUE_SIZE 200
+#define DATA_QUEUE_SIZE 400
 
 FILE *fp;
 unsigned long long int bytesToPacket;

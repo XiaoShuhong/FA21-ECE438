@@ -1,5 +1,84 @@
-compilation of version 3 failed with:
+compilation of version 9 failed with:
 mkdir -p obj
-make: *** No rule to make target `obj/sender_main.o', needed by `reliable_sender'.  Stop.
+g++ -g -Wall -Wextra -Wno-sign-compare -std=c++11 -c -o obj/receiver_main.o src/receiver_main.cpp
+src/receiver_main.cpp: In function ‘void reliablyReceive(short unsigned int, char*)’:
+src/receiver_main.cpp:81:22: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+         diep("socket");
+                      ^
+src/receiver_main.cpp:89:20: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+         diep("bind");
+                    ^
+src/receiver_main.cpp:116:24: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+             diep("recv");
+                        ^
+src/receiver_main.cpp:130:41: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+                 diep("SYNACK's sendto()");
+                                         ^
+src/receiver_main.cpp:143:41: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+                 diep("FINACK's sendto()");
+                                         ^
+src/receiver_main.cpp:164:47: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+                     diep("past ACK's sendto()");
+                                               ^
+src/receiver_main.cpp:191:47: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+                     diep("good ACK's sendto()");
+                                               ^
+src/receiver_main.cpp:202:61: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+                         diep("Could not open file to write.");
+                                                             ^
+src/receiver_main.cpp:237:48: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+                     diep("Full receiver buffer");
+                                                ^
+src/receiver_main.cpp:248:46: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+                     diep("dup ACK's sendto()");
+                                              ^
+g++ -g -Wall -Wextra -Wno-sign-compare -std=c++11 obj/receiver_main.o -o receiver_main 
+g++ -g -Wall -Wextra -Wno-sign-compare -std=c++11 -c -o obj/sender_main.o src/sender_main.cpp
+src/sender_main.cpp: In function ‘void reliablyTransfer(char*, short unsigned int, char*, long long unsigned int)’:
+src/sender_main.cpp:107:22: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+         diep("socket");
+                      ^
+src/sender_main.cpp:129:43: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+                 diep("can not receive ack");
+                                           ^
+src/sender_main.cpp: In function ‘void start_connection(int)’:
+src/sender_main.cpp:212:52: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+         diep("start connection error when send syn");
+                                                    ^
+src/sender_main.cpp:215:41: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+         diep("error when receive synack");
+                                         ^
+src/sender_main.cpp:222:52: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+         diep("start connection error when send ack");
+                                                    ^
+src/sender_main.cpp: In function ‘void finish_connection(int)’:
+src/sender_main.cpp:235:52: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+         diep("start connection error when send syn");
+                                                    ^
+src/sender_main.cpp:242:45: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+             diep("error when receive finack");
+                                             ^
+src/sender_main.cpp:245:56: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+             diep("start connection error when send syn");
+                                                        ^
+src/sender_main.cpp:254:52: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+         diep("start connection error when send ack");
+                                                    ^
+src/sender_main.cpp: In function ‘void settimeout(int)’:
+src/sender_main.cpp:263:28: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+         diep("settimeout()");
+                            ^
+src/sender_main.cpp: In function ‘void queuing_packet(int)’:
+src/sender_main.cpp:287:13: warning: unused variable ‘idx’ [-Wunused-variable]
+         int idx;
+             ^
+src/sender_main.cpp: In function ‘void sendpacket(int)’:
+src/sender_main.cpp:331:28: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+             diep("sendto()");
+                            ^
+src/sender_main.cpp:348:36: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+                     diep("sendto()");
+                                    ^
+g++ -g -Wall -Wextra -Wno-sign-compare -std=c++11 obj/sender_main.o -o sender_main 
  
 

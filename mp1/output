@@ -1,8 +1,0 @@
-In this assignment, you will implement a simple HTTP client and server. The client will
-be able to GET correctly from standard web servers, and browsers will be able to GET
-correctly from your server. The test setup will be two VMs, one server and one client. Each
-test will use your client or wget, and your server or thttpd. Your client doesn’t have to
-support caching or recursively retrieving embedded objects. HTTP uses TCP – you can use
-Beej’s client.c and server.c as a base. Your server must support concurrent connections: if
-one client is downloading a 10MB object, another client that comes looking for a 10KB
-object shouldn’t have to wait for the first to finish.

@@ -30,14 +30,14 @@ struct sockaddr_in si_other;
 int s, slen;
 
 //////////////////
-#define MAX_SIZE 500
+#define MAX_SIZE 1500
 #define DATA 0
 #define ACK 1
 #define SYN 2
 #define SYNACK 3
 #define FIN 4
 #define FINACK 5
-#define MAX_SEQ 1000
+#define MAX_SEQ 2000
 #define RTT 20000
 #define RTO_TH 2*RTT
 #define DATA_QUEUE_SIZE 200

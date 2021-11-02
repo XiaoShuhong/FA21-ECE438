@@ -27,14 +27,14 @@
 using namespace std;
 
 #define BUFFERSIZE 999 // max number of packets that can be buffered at the receiver side
-#define MAX_SIZE 500
+#define MAX_SIZE 1500
 #define DATA 0
 #define ACK 1
 #define SYN 2
 #define SYNACK 3
 #define FIN 4
 #define FINACK 5
-#define MAX_SEQ 1000
+#define MAX_SEQ 2000
 
 struct sockaddr_in si_me, si_other;
 int s, slen;
@@ -281,4 +281,3 @@ int main(int argc, char** argv) {
 
     reliablyReceive(udpPort, argv[2]);
 }
-

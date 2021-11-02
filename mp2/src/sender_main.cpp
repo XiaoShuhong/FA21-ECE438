@@ -72,7 +72,7 @@ int timeout = 0;
 int new_ack = 0;  //flags
 char data_temp[sizeof(packet)]; 
 //////////////////
-void diep(char *s) {
+void diep(const char *s) {
     perror(s);
     exit(1);
 }
@@ -119,7 +119,7 @@ void reliablyTransfer(char* hostname, unsigned short int hostUDPport, char* file
 
     queuing_packet(1);
 
-    settimeout(s); //lyc他们的version
+    settimeout(s); 
 
     sendpacket(s);
     while(!data_queue.empty() || !ack_queue.empty()){
@@ -265,7 +265,7 @@ void settimeout(int s){
 
 }
 
-void queuing_packet(int num){     //修改：目前是一次性把整个文件拆好入栈，但如果需要考虑max_seq动态变化，则每次入栈最多max_queue个包
+void queuing_packet(int num){     
     cout<<"now in queue function"<<endl;
     cout<<queue_done_flag<<num<<bytesToPacket<<endl;
     if (queue_done_flag==1){
@@ -279,12 +279,11 @@ void queuing_packet(int num){     //修改：目前是一次性把整个文件�
         cout<<"queeing all done"<<endl;
         queue_done_flag=1;
         return ;
-    }                                              //或者，在实际传输以前修改id以匹配
+    }                                            
 
     while(bytesToPacket>0 && num>0){
         packet my_packet;
         char buf[MAX_SIZE];
-        int idx;
         int byte_read;
         int read_size;
         if(bytesToPacket<MAX_SIZE){
@@ -332,7 +331,7 @@ void sendpacket(int socket){
         }
         cout<<"resend packet "<<ack_queue.front().id.data_id<<" done"<<endl;
                 
-        //如果处于timeout，则再发送ack_queue最前面的packet
+        
     }
     else{
         if(data_queue.empty()){

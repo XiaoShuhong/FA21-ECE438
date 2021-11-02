@@ -40,7 +40,7 @@ struct sockaddr_in si_me, si_other;
 int s, slen;
 FILE * fPtr;
 
-void diep(char *s) {
+void diep(const char *s) {
     perror(s);
     exit(1);
 }

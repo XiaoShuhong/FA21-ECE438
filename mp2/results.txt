@@ -7,15 +7,14 @@ test results:
   drop rate=0.1 succeeded!
 -10:  quick convergence failed: newcomer flow didn't get 40% of your protocol's optimal-conditions bandwidth fast enough.
 
- TCP friendliness succeeded! (TCP got 22.1 Mbps)
--10:  TCP friendliness with 1% loss failed: TCP only got 2.92 Mbps (need 7).
+ TCP friendliness succeeded! (TCP got 8.91 Mbps)
+-10:  TCP friendliness with 1% loss failed: TCP only got 2.73 Mbps (need 7).
 
- -10:  competition vs TCP failed: your receiver wrote 7528448 of 10MB to disk in 50 seconds.
-
+  competition vs TCP succeeded!
 ====================
 
-version:20
-score: 70/100
+version:21
+score: 80/100
 all-time best score (your current grade): 80/100
 
 

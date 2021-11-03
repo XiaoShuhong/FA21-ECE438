@@ -9,8 +9,7 @@ test results:
 
 -10:   drop rate=0.1 failed: only received 0 of 10000 after 10s.
 
--10:  quick convergence failed: failed to send 20MB in 30s (receiver wrote 1461058 bytes)
-
+ quick convergence succeeded!
 -10:  TCP friendliness failed: your process died or ended early. (note: it's being given 999000999000 as the numBytes argument)
 
 -10:  TCP friendliness with 1% loss failed: your process died or ended early. (note: it's being given 999000999000 as the numBytes argument)
@@ -19,7 +18,7 @@ test results:
 
 ====================
 
-version:12
+version:13
 score: 0/100
 all-time best score (your current grade): 0/100
 

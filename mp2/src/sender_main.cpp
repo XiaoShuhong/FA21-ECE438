@@ -39,7 +39,7 @@ int s, slen;
 #define FINACK 5
 #define MAX_SEQ 2000
 #define RTT 20000
-#define RTO_TH 3*RTT
+#define RTO_TH 2*RTT
 #define DATA_QUEUE_SIZE 400
 
 FILE *fp;
@@ -377,6 +377,9 @@ void state_transition(int s){
             
             if(timeout){
                 SST=CW/2.0;
+		if(SST<1){
+		    SST=1;
+		}
                 CW=1;
                 dupACKCount=0;
                 sendpacket(s);
@@ -389,6 +392,9 @@ void state_transition(int s){
             if(dupACKCount==3){
                 SST=CW/2.0;
                 CW=SST+3.0;
+		if(SST<1){
+		    SST=1;
+		}
                 sendpacket(s);
                 current_state=Fast_Recovery;
                 return;
@@ -406,6 +412,9 @@ void state_transition(int s){
             }
             if(timeout){
                 SST=CW/2.0;
+		if(SST<1){
+		    SST=1;
+		}
                 CW=1.0;
                 dupACKCount=0;
                 sendpacket(s);
@@ -416,6 +425,9 @@ void state_transition(int s){
             
             if(dupACKCount==3){
                 SST=CW/2.0;
+		if(SST<1){
+		    SST=1;
+		}
                 CW=SST+3.0;
                 sendpacket(s);
                 current_state=Fast_Recovery;
@@ -439,6 +451,9 @@ void state_transition(int s){
             }
             if(timeout){
                 SST=CW/2.0;
+		if(SST<1){
+		    SST=1;
+		}
                 CW=1.0;
                 dupACKCount=0;
                 sendpacket(s);

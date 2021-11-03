@@ -39,7 +39,7 @@ int s, slen;
 #define FINACK 5
 #define MAX_SEQ 2000
 #define RTT 20000
-#define RTO_TH 5*RTT
+#define RTO_TH 3*RTT
 #define DATA_QUEUE_SIZE 400
 
 FILE *fp;
@@ -63,8 +63,8 @@ typedef struct{
 queue <packet> data_queue;
 queue <packet> ack_queue;
 
-double CW=2.0;
-double SST=128;
+double CW=5.0;
+double SST=256;
 int dupACKCount=0;
 
 enum STATE{Slow_Start,Congestion_Avoidance,Fast_Recovery}current_state=Slow_Start;

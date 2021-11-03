@@ -201,7 +201,15 @@ void reliablyReceive(unsigned short int myUDPport, char* destinationFile) {
                     if(fPtr == NULL){
                         diep("Could not open file to write.");
                     }
-                    fputs(((packet*) &buf[ACKseq % MAX_SEQ])->data, fPtr);
+                    // fputs(((packet*) &buf[ACKseq % MAX_SEQ])->data, fPtr);
+                    cout<<"00000"<<endl;
+                    packet temp_packet;
+                    memcpy(&temp_packet, (packet*) &buf[ACKseq % MAX_SEQ], sizeof(packet));
+                    // data_size=((packet*) &buf[ACKseq % MAX_SEQ]))->psize;
+    
+                    fwrite(temp_packet.data,sizeof(char),temp_packet.psize,fPtr);
+                    cout<<"111111"<<endl;
+                    cout<<"write "<<temp_packet.psize<<"into output"<<endl;
                     
                     cout<<"File written successfully for ACKseq "<< ACKseq <<endl;
                     cout<<endl;
@@ -281,3 +289,4 @@ int main(int argc, char** argv) {
 
     reliablyReceive(udpPort, argv[2]);
 }
+

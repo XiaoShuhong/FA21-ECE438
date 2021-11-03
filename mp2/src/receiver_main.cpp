@@ -58,6 +58,12 @@ typedef struct{
 
 
 void reliablyReceive(unsigned short int myUDPport, char* destinationFile) {
+
+    fPtr =  fopen(destinationFile, "w");
+    if(fPtr == NULL){
+        diep("Could not open file to write.");
+    }
+                    // fputs(((packet*) &buf[ACKseq % MAX_SEQ])->data, fPtr);
     
     slen = sizeof (si_other);
     int numbytes;
@@ -196,13 +202,9 @@ void reliablyReceive(unsigned short int myUDPport, char* destinationFile) {
                 /* Write the packet data into destinationFile, if there's a packet in the next position,
                 write it too. Do it till no packet buffered in the next position, 
                 then ACKseq++ and buf_packet_num-- */
+                 
                 while(flag[ACKseq % MAX_SEQ] != 0){
-                    fPtr =  fopen(destinationFile, "a");
-                    if(fPtr == NULL){
-                        diep("Could not open file to write.");
-                    }
-                    // fputs(((packet*) &buf[ACKseq % MAX_SEQ])->data, fPtr);
-                    
+                
                     packet temp_packet;
                     memcpy(&temp_packet, (packet*) &buf[ACKseq % MAX_SEQ], sizeof(packet));
                     // data_size=((packet*) &buf[ACKseq % MAX_SEQ]))->psize;
@@ -212,7 +214,7 @@ void reliablyReceive(unsigned short int myUDPport, char* destinationFile) {
                     cout<<"File written successfully for ACKseq "<< ACKseq <<endl;
                     cout<<endl;
 
-                    fclose(fPtr);
+                    
                     flag[ACKseq % MAX_SEQ] = 0;
                     // buf[ACKseq] = 0;
                     ACKseq++;
@@ -266,6 +268,7 @@ void reliablyReceive(unsigned short int myUDPport, char* destinationFile) {
             }
         }
     }      
+    fclose(fPtr);
     close(s);
 	printf("%s received.", destinationFile);
     return;

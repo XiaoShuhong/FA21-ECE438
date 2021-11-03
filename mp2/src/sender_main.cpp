@@ -63,8 +63,8 @@ typedef struct{
 queue <packet> data_queue;
 queue <packet> ack_queue;
 
-double CW=1.0;
-double SST=64.0;
+double CW=2.0;
+double SST=128;
 int dupACKCount=0;
 
 enum STATE{Slow_Start,Congestion_Avoidance,Fast_Recovery}current_state=Slow_Start;

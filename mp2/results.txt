@@ -4,18 +4,17 @@ test results:
  transfer 50K succeeded!
  utilize empty link succeeded!
   drop rate=0.05 succeeded!
--10:   drop rate=0.1 failed: only received 0 of 10000 after 10s.
-
+  drop rate=0.1 succeeded!
 -10:  quick convergence failed: newcomer flow didn't get 40% of your protocol's optimal-conditions bandwidth fast enough.
 
- TCP friendliness succeeded! (TCP got 22.0 Mbps)
- TCP friendliness with 1% loss succeeded! (TCP got 429 Mbps)
- -10:  competition vs TCP failed: your receiver wrote 4079616 of 10MB to disk in 50 seconds.
+ TCP friendliness succeeded! (TCP got 15.6 Mbps)
+ TCP friendliness with 1% loss succeeded! (TCP got 21.5 Mbps)
+ -10:  competition vs TCP failed: your receiver wrote 4919296 of 10MB to disk in 50 seconds.
 
 ====================
 
-version:17
-score: 70/100
-all-time best score (your current grade): 70/100
+version:18
+score: 80/100
+all-time best score (your current grade): 80/100
 
 

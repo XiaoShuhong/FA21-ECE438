@@ -39,7 +39,7 @@ int s, slen;
 #define FINACK 5
 #define MAX_SEQ 2000
 #define RTT 20000
-#define RTO_TH 2*RTT
+#define RTO_TH 5*RTT
 #define DATA_QUEUE_SIZE 400
 
 FILE *fp;

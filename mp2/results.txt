@@ -1,25 +1,18 @@
 test results:
 
--100:   sanity check: transfer single byte failed: wrote 0 of 1.
+  sanity check: transfer single byte succeeded!
+ transfer 50K succeeded!
+-10:  utilize empty link failed: your sender/receiver didn't terminate within 20s. your receiver wrote 0 of 10000000 bytes to disk.
 
--10:  transfer 50K failed: only received 0 of 50000 after 6s.
-
--10:  utilize empty link failed: 0 of 10000000 were written.
--10:   drop rate=0.05 failed: received file had an error.
-
--10:   drop rate=0.1 failed: only received 0 of 10000 after 10s.
-
--10:  quick convergence failed: failed to send 20MB in 30s (receiver wrote 5672960 bytes)
-
--10:  TCP friendliness failed: your process died or ended early. (note: it's being given 999000999000 as the numBytes argument)
-
--10:  TCP friendliness with 1% loss failed: your process died or ended early. (note: it's being given 999000999000 as the numBytes argument)
-
- -10:  competition vs TCP failed: received file had an error.
-
+  drop rate=0.05 succeeded!
+  drop rate=0.1 succeeded!
+-25: INFINITE LOOP DETECTED IN TEST 5 (indexed starting from 1)
+-25: INFINITE LOOP DETECTED IN TEST 6 (indexed starting from 1)
+-25: INFINITE LOOP DETECTED IN TEST 7 (indexed starting from 1)
+-25: INFINITE LOOP DETECTED IN TEST 8 (indexed starting from 1)
 ====================
 
-version:23
+version:24
 score: 0/100
 all-time best score (your current grade): 80/100
 

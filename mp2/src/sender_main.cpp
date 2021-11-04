@@ -30,7 +30,7 @@ struct sockaddr_in si_other;
 int s, slen;
 
 //////////////////
-#define MAX_SIZE 2000
+#define MAX_SIZE 2500
 #define DATA 0
 #define ACK 1
 #define SYN 2
@@ -39,7 +39,7 @@ int s, slen;
 #define FINACK 5
 #define MAX_SEQ 2000
 #define RTT 20000
-#define RTO_TH 150000
+#define RTO_TH 60000
 #define DATA_QUEUE_SIZE 400
 
 FILE *fp;
@@ -63,8 +63,8 @@ typedef struct{
 queue <packet> data_queue;
 queue <packet> ack_queue;
 
-double CW=1000;
-double SST=300;
+double CW=4;
+double SST=256;
 int dupACKCount=0;
 
 enum STATE{Slow_Start,Congestion_Avoidance,Fast_Recovery}current_state=Slow_Start;
@@ -377,9 +377,11 @@ void state_transition(int s){
             
             if(timeout){
                 SST=CW/2.0;
-		// if(SST<1){
-		//     SST=1;
-		// }
+
+		        if(SST<1){
+		            SST=1;
+		        }
+                
                 CW=1;
                 dupACKCount=0;
                 sendpacket(s);
@@ -392,9 +394,11 @@ void state_transition(int s){
             if(dupACKCount==3){
                 SST=CW/2.0;
                 CW=SST+3.0;
-		// if(SST<1){
-		//     SST=1;
-		// }
+
+		        if(SST<1){
+		            SST=1;
+		        }
+
                 sendpacket(s);
                 current_state=Fast_Recovery;
                 return;
@@ -412,9 +416,9 @@ void state_transition(int s){
             }
             if(timeout){
                 SST=CW/2.0;
-		// if(SST<1){
-		//     SST=1;
-		// }
+		        if(SST<1){
+		            SST=1;
+		        }
                 CW=1.0;
                 dupACKCount=0;
                 sendpacket(s);
@@ -425,10 +429,12 @@ void state_transition(int s){
             
             if(dupACKCount==3){
                 SST=CW/2.0;
-		// if(SST<1){
-		//     SST=1;
-		// }
+		        
                 CW=SST+3.0;
+
+                if(SST<1){
+		          SST=1;
+		        }
                 sendpacket(s);
                 current_state=Fast_Recovery;
                 return;
@@ -451,9 +457,11 @@ void state_transition(int s){
             }
             if(timeout){
                 SST=CW/2.0;
-		// if(SST<1){
-		//     SST=1;
-		// }
+
+		        if(SST<1){
+		        SST=1;
+		        }
+
                 CW=1.0;
                 dupACKCount=0;
                 sendpacket(s);

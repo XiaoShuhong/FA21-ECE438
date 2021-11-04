@@ -30,7 +30,7 @@ struct sockaddr_in si_other;
 int s, slen;
 
 //////////////////
-#define MAX_SIZE 2500
+#define MAX_SIZE 2200
 #define DATA 0
 #define ACK 1
 #define SYN 2
@@ -63,7 +63,7 @@ typedef struct{
 queue <packet> data_queue;
 queue <packet> ack_queue;
 
-double CW=4;
+double CW=1;
 double SST=256;
 int dupACKCount=0;
 
@@ -130,7 +130,7 @@ void reliablyTransfer(char* hostname, unsigned short int hostUDPport, char* file
             }
             timeout=1;
             new_ack=0;
-            cout<<"timeout"<<endl;
+            // cout<<"timeout"<<endl;
             state_transition(s);
         }
         else{
@@ -174,7 +174,7 @@ void reliablyTransfer(char* hostname, unsigned short int hostUDPport, char* file
     printf("Closing the socket\n");
     close(s);
     fclose(fp);
-    cout<<"done transmit"<<endl;
+    // cout<<"done transmit"<<endl;
     return;
 
 }
@@ -221,7 +221,7 @@ void start_connection(int s){
     if(sendto(s,temp,sizeof(packet),0,(sockaddr*)&si_other, (socklen_t)slen)==-1){
         diep("start connection error when send ack");
     }
-    cout<<"successfully connected"<<endl;
+    // cout<<"successfully connected"<<endl;
 
 }
 
@@ -253,7 +253,7 @@ void finish_connection(int s){
     if(sendto(s,temp,sizeof(packet),0,(sockaddr*)&si_other, (socklen_t)slen)==-1){
         diep("start connection error when send ack");
     }
-    cout<<"successfully connected"<<endl;
+    // cout<<"successfully connected"<<endl;
 }
 void settimeout(int s){
     struct timeval RTO;
@@ -266,17 +266,17 @@ void settimeout(int s){
 }
 
 void queuing_packet(int num){     
-    cout<<"now in queue function"<<endl;
-    cout<<queue_done_flag<<num<<bytesToPacket<<endl;
+    // cout<<"now in queue function"<<endl;
+    // cout<<queue_done_flag<<num<<bytesToPacket<<endl;
     if (queue_done_flag==1){
         return;
     }
     if (num<1 ){
-        cout<<"due to CW, no new queuing"<<endl;
+        // cout<<"due to CW, no new queuing"<<endl;
         return;
     } 
     if (bytesToPacket==0){
-        cout<<"queeing all done"<<endl;
+        // cout<<"queeing all done"<<endl;
         queue_done_flag=1;
         return ;
     }                                            
@@ -301,13 +301,13 @@ void queuing_packet(int num){
             seq_num = seq_num+1;
             memcpy(my_packet.data,&buf,sizeof(char)*byte_read);
             data_queue.push(my_packet);
-            cout<<"flow "<<flow<<" queueing packet "<<my_packet.id.data_id<<endl;
+            // cout<<"flow "<<flow<<" queueing packet "<<my_packet.id.data_id<<endl;
             
             bytesToPacket=bytesToPacket-read_size;
             num-=1;
         }
     }
-    cout<<"flow "<<flow<<" queueing finish"<<endl;
+    // cout<<"flow "<<flow<<" queueing finish"<<endl;
     flow+=1;
     
 }
@@ -315,21 +315,21 @@ void queuing_packet(int num){
 void sendpacket(int socket){
     int num_p_send=CW-ack_queue.size();
     queuing_packet(num_p_send);
-    cout<<"flow "<<flow<<"CW is "<<CW<<","<<ack_queue.size()<<" not receive ack, "<<"send "<<num_p_send<<" packets"<<endl;
+    // cout<<"flow "<<flow<<"CW is "<<CW<<","<<ack_queue.size()<<" not receive ack, "<<"send "<<num_p_send<<" packets"<<endl;
     
     char temp[sizeof(packet)]; 
     if (num_p_send<1.0){
-        if (timeout==1){
-            cout<<"resend packet "<<ack_queue.front().id.data_id<<" due to time out"<<endl;
-        }
-        if (dupACKCount==3){
-            cout<<"resend packet "<<ack_queue.front().id.data_id<<" due to duplicate"<<endl;
-        }
+        // if (timeout==1){
+        //     cout<<"resend packet "<<ack_queue.front().id.data_id<<" due to time out"<<endl;
+        // }
+        // if (dupACKCount==3){
+        //     cout<<"resend packet "<<ack_queue.front().id.data_id<<" due to duplicate"<<endl;
+        // }
         memcpy(temp, &ack_queue.front(), sizeof(packet));
         if (sendto(socket, temp, sizeof(packet), 0,(sockaddr*)&si_other, (socklen_t)slen)==-1){
             diep("sendto()");
         }
-        cout<<"resend packet "<<ack_queue.front().id.data_id<<" done"<<endl;
+        // cout<<"resend packet "<<ack_queue.front().id.data_id<<" done"<<endl;
                 
         
     }
@@ -346,7 +346,7 @@ void sendpacket(int socket){
                 if (sendto(socket, temp, sizeof(packet), 0, (sockaddr*)&si_other, (socklen_t)slen)==-1){
                     diep("sendto()");
                 }    
-                cout<<"flow "<<flow<<", send packet "<<data_queue.front().id.data_id<<"done"<<endl;
+                // cout<<"flow "<<flow<<", send packet "<<data_queue.front().id.data_id<<"done"<<endl;
                 ack_queue.push(data_queue.front());
                 data_queue.pop();           
             }
@@ -362,11 +362,11 @@ void sendpacket(int socket){
 
 
 void state_transition(int s){
-    cout<<"flow "<<flow<<" now we are in state "<<current_state<<endl;
+    // cout<<"flow "<<flow<<" now we are in state "<<current_state<<endl;
     switch(current_state){
         case Slow_Start:
             if(new_ack){
-                CW++;
+                CW+=1;
                 dupACKCount=0;
                 sendpacket(s);
                 new_ack=0;
@@ -382,7 +382,7 @@ void state_transition(int s){
 		            SST=1;
 		        }
                 
-                CW=1;
+                CW=1.0;
                 dupACKCount=0;
                 sendpacket(s);
                 timeout=0;
@@ -406,7 +406,8 @@ void state_transition(int s){
             break;
         case Congestion_Avoidance:
             if(new_ack){
-                CW=CW+1.0/floor(CW);
+                // CW=CW+1.0/floor(CW);
+                CW=CW+0.2;
                 dupACKCount=0;
                 sendpacket(s);
                 new_ack=0;

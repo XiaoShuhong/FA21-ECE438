@@ -27,7 +27,7 @@
 using namespace std;
 
 #define BUFFERSIZE 5000 // max number of packets that can be buffered at the receiver side
-#define MAX_SIZE 2000
+#define MAX_SIZE 2500
 #define DATA 0
 #define ACK 1
 #define SYN 2

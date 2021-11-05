@@ -30,7 +30,7 @@ struct sockaddr_in si_other;
 int s, slen;
 
 //////////////////
-#define MAX_SIZE 1800
+#define MAX_SIZE 2000
 #define DATA 0
 #define ACK 1
 #define SYN 2
@@ -39,8 +39,8 @@ int s, slen;
 #define FINACK 5
 #define MAX_SEQ 4000
 #define RTT 20000
-#define RTO_TH1 40000
-#define RTO_TH2 150000
+#define RTO_TH1 50000
+#define RTO_TH2 350000
 #define DATA_QUEUE_SIZE 400
 
 FILE *fp;
@@ -67,6 +67,9 @@ queue <packet> ack_queue;
 double CW=1.0;
 double SST=64.0;
 int dupACKCount=0;
+int maxwinsize;
+int maxcwsize;
+
 
 
 enum STATE{Slow_Start,Congestion_Avoidance,Fast_Recovery}current_state=Slow_Start;
@@ -99,12 +102,21 @@ void reliablyTransfer(char* hostname, unsigned short int hostUDPport, char* file
         exit(1);
     }
     int rot_flag=1;
-    // if (bytesToTransfer>10000000){
-    //     CW=1000;
-    //     SST=300;
-    //     rot_flag=0;
+    if (bytesToTransfer>10000000 && bytesToTransfer<=10600000){
+        CW=1;
+        SST=300;
+        rot_flag=0;
+        maxcwsize=1000;
+        maxwinsize=1200;
 
-    // }
+    }
+    else{
+        CW=2;
+        SST=400;
+        rot_flag=1;
+        maxcwsize=1000;
+        maxwinsize=2000;
+    }
 	/* Determine how many bytes to transfer */
     bytesToPacket=bytesToTransfer;
 
@@ -381,6 +393,9 @@ void state_transition(int s){
         case Slow_Start:
             if(new_ack){
                 CW+=1;
+                if(CW>maxcwsize){
+                    CW=maxcwsize;         /////////////////////
+                }
                 dupACKCount=0;
                 sendpacket(s);
                 new_ack=0;
@@ -392,9 +407,9 @@ void state_transition(int s){
             if(timeout){
                 SST=CW/2.0;
 
-		        // if(SST<1){
-		        //     SST=1;
-		        // }
+		        if(SST<1){
+		            SST=1;
+		        }
                 
                 CW=1.0;
                 dupACKCount=0;
@@ -408,10 +423,14 @@ void state_transition(int s){
             if(dupACKCount==3){
                 SST=CW/2.0;
                 CW=SST+3.0;
+                if(CW>maxcwsize){
+                    CW=maxcwsize;         /////////////////////
+                }
 
-		        // if(SST<1){
-		        //     SST=1;
-		        // }
+
+		        if(SST<1){
+		            SST=1;
+		        }
 
                 sendpacket(s);
                 current_state=Fast_Recovery;
@@ -425,15 +444,18 @@ void state_transition(int s){
                 dupACKCount=0;
                 sendpacket(s);
                 new_ack=0;
+                if(CW>maxcwsize){
+                    CW=maxcwsize;         /////////////////////
+                }
             }
             else{
                 dupACKCount++;
             }
             if(timeout){
                 SST=CW/2.0;
-		        // if(SST<1){
-		        //     SST=1;
-		        // }
+		        if(SST<1){
+		            SST=1;
+		        }
                 CW=1.0;
                 dupACKCount=0;
                 sendpacket(s);
@@ -446,10 +468,13 @@ void state_transition(int s){
                 SST=CW/2.0;
 		        
                 CW=SST+3.0;
+                if(CW>maxcwsize){
+                    CW=maxcwsize;         /////////////////////
+                }
 
-                // if(SST<1){
-		        //   SST=1;
-		        // }
+                if(SST<1){
+		          SST=1;
+		        }
                 sendpacket(s);
                 current_state=Fast_Recovery;
                 return;
@@ -459,6 +484,9 @@ void state_transition(int s){
             
             if(new_ack){
                 CW=SST;
+                if(CW>maxcwsize){
+                    CW=maxcwsize;         /////////////////////
+                }
                 dupACKCount=0;
                 sendpacket(s);
                 current_state=Congestion_Avoidance;
@@ -468,6 +496,9 @@ void state_transition(int s){
             else{
                 dupACKCount++;
                 CW++;
+                if(CW>maxcwsize){
+                    CW=maxcwsize;         /////////////////////
+                }
                 sendpacket(s);
             }
             if(timeout){

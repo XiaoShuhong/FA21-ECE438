@@ -30,16 +30,17 @@ struct sockaddr_in si_other;
 int s, slen;
 
 //////////////////
-#define MAX_SIZE 2200
+#define MAX_SIZE 2000
 #define DATA 0
 #define ACK 1
 #define SYN 2
 #define SYNACK 3
 #define FIN 4
 #define FINACK 5
-#define MAX_SEQ 2000
+#define MAX_SEQ 4000
 #define RTT 20000
-#define RTO_TH 60000
+#define RTO_TH1 50000
+#define RTO_TH2 150000
 #define DATA_QUEUE_SIZE 400
 
 FILE *fp;
@@ -63,9 +64,10 @@ typedef struct{
 queue <packet> data_queue;
 queue <packet> ack_queue;
 
-double CW=1;
-double SST=256;
+double CW=1.0;
+double SST=64.0;
 int dupACKCount=0;
+
 
 enum STATE{Slow_Start,Congestion_Avoidance,Fast_Recovery}current_state=Slow_Start;
 int timeout = 0;
@@ -79,7 +81,7 @@ void diep(const char *s) {
 
 void start_connection(int s);
 void finish_connection(int s);
-void settimeout(int s);
+void settimeout(int s,int flag);
 void queuing_packet(int num);
 void sendpacket(int socket);
 void state_transition(int s);
@@ -96,7 +98,13 @@ void reliablyTransfer(char* hostname, unsigned short int hostUDPport, char* file
         printf("Could not open file to send.");
         exit(1);
     }
+    int rot_flag=1;
+    if (bytesToTransfer>10000000){
+        CW=1000;
+        SST=300;
+        rot_flag=0;
 
+    }
 	/* Determine how many bytes to transfer */
     bytesToPacket=bytesToTransfer;
 
@@ -119,7 +127,7 @@ void reliablyTransfer(char* hostname, unsigned short int hostUDPport, char* file
 
     queuing_packet(1);
 
-    settimeout(s); 
+    settimeout(s,rot_flag); 
 
     sendpacket(s);
     while(!data_queue.empty() || !ack_queue.empty()){
@@ -255,10 +263,16 @@ void finish_connection(int s){
     }
     // cout<<"successfully connected"<<endl;
 }
-void settimeout(int s){
+void settimeout(int s, int flag){
     struct timeval RTO;
     RTO.tv_sec=0;
-    RTO.tv_usec=RTO_TH;
+    if (flag==1){
+        RTO.tv_usec=RTO_TH1;
+    }
+    else{
+        RTO.tv_usec=RTO_TH2;
+    }
+    
     if(setsockopt(s,SOL_SOCKET,SO_RCVTIMEO,&RTO,sizeof(RTO))==-1){
         diep("settimeout()");
     }
@@ -406,8 +420,8 @@ void state_transition(int s){
             break;
         case Congestion_Avoidance:
             if(new_ack){
-                // CW=CW+1.0/floor(CW);
-                CW=CW+0.2;
+                CW=CW+1.0/floor(CW);
+                // CW=CW+0.2;
                 dupACKCount=0;
                 sendpacket(s);
                 new_ack=0;

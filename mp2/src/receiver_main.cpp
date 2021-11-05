@@ -26,15 +26,15 @@
 #include <algorithm>
 using namespace std;
 
-#define BUFFERSIZE 3000 // max number of packets that can be buffered at the receiver side
-#define MAX_SIZE 2200
+#define BUFFERSIZE 5000 // max number of packets that can be buffered at the receiver side
+#define MAX_SIZE 2000
 #define DATA 0
 #define ACK 1
 #define SYN 2
 #define SYNACK 3
 #define FIN 4
 #define FINACK 5
-#define MAX_SEQ 2000
+#define MAX_SEQ 4000
 
 struct sockaddr_in si_me, si_other;
 int s, slen;

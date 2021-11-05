@@ -39,7 +39,7 @@ int s, slen;
 #define FINACK 5
 #define MAX_SEQ 4000
 #define RTT 20000
-#define RTO_TH1 50000
+#define RTO_TH1 40000
 #define RTO_TH2 150000
 #define DATA_QUEUE_SIZE 400
 
@@ -99,12 +99,12 @@ void reliablyTransfer(char* hostname, unsigned short int hostUDPport, char* file
         exit(1);
     }
     int rot_flag=1;
-    if (bytesToTransfer>10000000){
-        CW=1000;
-        SST=300;
-        rot_flag=0;
+    // if (bytesToTransfer>10000000){
+    //     CW=1000;
+    //     SST=300;
+    //     rot_flag=0;
 
-    }
+    // }
 	/* Determine how many bytes to transfer */
     bytesToPacket=bytesToTransfer;
 
@@ -392,9 +392,9 @@ void state_transition(int s){
             if(timeout){
                 SST=CW/2.0;
 
-		        if(SST<1){
-		            SST=1;
-		        }
+		        // if(SST<1){
+		        //     SST=1;
+		        // }
                 
                 CW=1.0;
                 dupACKCount=0;
@@ -409,9 +409,9 @@ void state_transition(int s){
                 SST=CW/2.0;
                 CW=SST+3.0;
 
-		        if(SST<1){
-		            SST=1;
-		        }
+		        // if(SST<1){
+		        //     SST=1;
+		        // }
 
                 sendpacket(s);
                 current_state=Fast_Recovery;
@@ -431,9 +431,9 @@ void state_transition(int s){
             }
             if(timeout){
                 SST=CW/2.0;
-		        if(SST<1){
-		            SST=1;
-		        }
+		        // if(SST<1){
+		        //     SST=1;
+		        // }
                 CW=1.0;
                 dupACKCount=0;
                 sendpacket(s);
@@ -447,9 +447,9 @@ void state_transition(int s){
 		        
                 CW=SST+3.0;
 
-                if(SST<1){
-		          SST=1;
-		        }
+                // if(SST<1){
+		        //   SST=1;
+		        // }
                 sendpacket(s);
                 current_state=Fast_Recovery;
                 return;
@@ -473,9 +473,9 @@ void state_transition(int s){
             if(timeout){
                 SST=CW/2.0;
 
-		        if(SST<1){
-		        SST=1;
-		        }
+		        // if(SST<1){
+		        // SST=1;
+		        // }
 
                 CW=1.0;
                 dupACKCount=0;

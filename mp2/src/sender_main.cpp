@@ -40,7 +40,7 @@ int s, slen;
 #define MAX_SEQ 4000
 #define RTT 20000
 #define RTO_TH1 50000
-#define RTO_TH2 200000
+#define RTO_TH2 150000
 #define DATA_QUEUE_SIZE 400
 
 FILE *fp;

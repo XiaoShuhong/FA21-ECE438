@@ -106,7 +106,7 @@ void reliablyTransfer(char* hostname, unsigned short int hostUDPport, char* file
         CW=1;
         SST=300;
         rot_flag=0;
-        maxcwsize=1000;
+        maxcwsize=1500;
         maxwinsize=1200;
 
     }
@@ -114,7 +114,7 @@ void reliablyTransfer(char* hostname, unsigned short int hostUDPport, char* file
         CW=2;
         SST=400;
         rot_flag=1;
-        maxcwsize=1000;
+        maxcwsize=2000;
         maxwinsize=2000;
     }
 	/* Determine how many bytes to transfer */

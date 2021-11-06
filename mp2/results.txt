@@ -6,15 +6,14 @@ test results:
   drop rate=0.05 succeeded!
   drop rate=0.1 succeeded!
 -25: INFINITE LOOP DETECTED IN TEST 5 (indexed starting from 1)
- TCP friendliness succeeded! (TCP got 9.59 Mbps)
--10:  TCP friendliness with 1% loss failed: TCP only got 2.27 Mbps (need 7).
+ TCP friendliness succeeded! (TCP got 9.11 Mbps)
+-10:  TCP friendliness with 1% loss failed: TCP only got 3.03 Mbps (need 7).
 
- -10:  competition vs TCP failed: your receiver wrote 933888 of 10MB to disk in 50 seconds.
-
+ -25: INFINITE LOOP DETECTED IN TEST 8 (indexed starting from 1)
 ====================
 
-version:37
-score: 55/100
+version:38
+score: 40/100
 all-time best score (your current grade): 80/100
 
 

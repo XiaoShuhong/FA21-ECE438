@@ -180,7 +180,7 @@ void fill_output(char* msgfile){
     for(int i=1;i<=nodes.size();i++){
         for(int j=1;j<=nodes.size();j++){
             if(i==j){
-                fpOut <<i<<i<<0<<endl;
+                fpOut <<i<<" "<<i<<" "<<0<<endl;
                 continue;
             }
             if(forward_table_list[i][j].second==INF || nodes.count(i)==0 || nodes.count(j)==0){
@@ -188,7 +188,7 @@ void fill_output(char* msgfile){
                 continue;
             }
             else{
-                fpOut << j<<forward_table_list[i][j].first<<forward_table_list[i][j].second<<endl;
+                fpOut << j<<" "<<forward_table_list[i][j].first<<" "<<forward_table_list[i][j].second<<endl;
             }
         }
         // fpOut<<endl;
@@ -236,7 +236,7 @@ void fill_output(char* msgfile){
             // cout<<temp.front()<<" ";
             temp.pop();
         }
-        fpOut<<msg<<endl;
+        fpOut<<"message "<<msg<<endl;
         // cout<<msg<<endl;
 
 

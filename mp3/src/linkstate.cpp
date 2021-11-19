@@ -7,6 +7,8 @@
 #include<iostream>
 #include<queue>
 #include <typeinfo> 
+#include<string>
+#include<sstream>
 
 
 using namespace std;
@@ -201,6 +203,7 @@ void fill_output(char* msgfile){
     inf.open(msgfile);
     while (getline(inf, s)){
         int len=s.length();
+        // cout<<len<<endl;
         c=s[0];
         d=s[2];
         a=int(c-'0');
@@ -212,6 +215,15 @@ void fill_output(char* msgfile){
             }
 
         }
+        
+    
+        
+
+        stringstream ss;
+        ss << msg;
+        string message = ss.str();
+        // cout<<message<<endl;
+        
         // cout<<typeid(a).name()<<endl;
         // cout<<c<<d<<endl;
         // cout<<a<<b<<endl;
@@ -220,7 +232,7 @@ void fill_output(char* msgfile){
         // cout<<msg<<endl;
 
         if(nodes.count(a) == 0|| nodes.count(b) == 0||forward_table_list[a][b].second == INF){
-            fpOut<< "from "<<a<<" to "<<b<<" cost infinite hops unreachable message "<<msg<<endl;
+            fpOut<< "from "<<a<<" to "<<b<<" cost infinite hops unreachable message "<<message<<endl;
             continue;
         }
         queue<int> temp;
@@ -236,7 +248,7 @@ void fill_output(char* msgfile){
             // cout<<temp.front()<<" ";
             temp.pop();
         }
-        fpOut<<"message  "<<msg<<endl;
+        fpOut<<"message "<<message<<endl;
         // cout<<msg<<endl;
 
 

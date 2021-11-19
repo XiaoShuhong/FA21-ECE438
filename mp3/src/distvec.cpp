@@ -8,17 +8,14 @@
 #include<queue>
 #include <typeinfo> 
 
-#define INF 99999
+#define INF -999
 
 using namespace std;
 ofstream fpOut;
 map< int,map<int,int> > weight;
 set<int> nodes;
 map<int, map<int,pair<int,int> > > forward_table_list;
-typedef map<int, pair<int,int> > single_dis_vec;
-typedef map<int, single_dis_vec> dis_vec;
-map<int,dis_vec > dis_vectors;
-queue<pair<int,single_dis_vec> > temp;
+
 void initialize(char* inputfile);
 void Distance_Vector();
 void fill_output(char* msgfile);
@@ -32,12 +29,13 @@ int main(int argc, char** argv) {
     }
 
     fpOut.open("output.txt");
+    forward_table_list.clear();
     initialize(argv[1]);
 
-    forward_table_list.clear();
+    
     Distance_Vector();
     fill_output(argv[2]);
-
+    
     do_change(argv[2],argv[3]);
     
     fpOut.close();
@@ -70,116 +68,81 @@ void initialize(char* inputfile){
     set<int>::iterator iter = nodes.begin();
 	while (iter!=nodes.end())
 	{
-        single_dis_vec self_vec;
-        dis_vec node_vec;
-        int out_node=*iter;
-        set<int>::iterator inner_iter = nodes.begin();
-	    while (inner_iter!=nodes.end()){
-            int inner_node=*inner_iter;
-            // cout<<out_node<<" "<<inner_node<<endl;
-            if(out_node==inner_node){
-                self_vec[inner_node]= make_pair(0,inner_node);
-                inner_iter++;
-                continue;
+        int src_node=*iter;
+        set<int>::iterator dest_iter = nodes.begin();
+	    while (dest_iter!=nodes.end()){
+            int des_node=*dest_iter;
+            if(des_node==src_node){
+                weight[src_node][des_node]=0;
             }
-            if(weight[out_node].count(inner_node)){
-                self_vec[inner_node]= make_pair(weight[out_node][inner_node],inner_node);
+            if(weight.count(src_node)==0){
+                weight[src_node][des_node]=INF;
             }
             else{
-                self_vec[inner_node]= make_pair(INF,INF);
+                if(weight[src_node].count(des_node)==0){
+                    weight[src_node][des_node]=INF;
+                }
             }
-        
-
-            inner_iter++;
-
+            forward_table_list[src_node][des_node]=make_pair(des_node, weight[src_node][des_node]);
+            dest_iter++;
         }
-        node_vec[out_node]=self_vec;
-        temp.push(make_pair(out_node,self_vec));
-        map<int,int>::iterator w_iter = weight[out_node].begin();
-        while (w_iter!=weight[out_node].end()){
-
-
-            int nei_node = w_iter->first;
-            single_dis_vec nei_vec;
-            // cout<<nei_node<<endl;
-
-            
-            set<int>::iterator inner_iter = nodes.begin();
-	        while (inner_iter!=nodes.end()){
-                int inner_node=*inner_iter;
-                nei_vec[inner_node]=make_pair(INF,INF);
-                inner_iter++;
-            }
-
-            node_vec[nei_node] = nei_vec;
-            w_iter++;
-
-        }
-        
-        dis_vectors[out_node] = node_vec;
         iter++;
     }
+
+    
+    //check weight
+    // set<int>::iterator iter2 = nodes.begin();
+	// while (iter2!=nodes.end()){
+
+    //     int cur_node=*iter2;
+    //     map<int,int>::iterator w_iter = weight[cur_node].begin();
+    //     while (w_iter!=weight[cur_node].end()){
+    //         cout<<cur_node<<" "<<w_iter->first<<" "<<w_iter->second<<endl;
+    //         w_iter++;
+    //     }
+    //     iter2++;
+
+    // }
+
+    
     
 }
 
 void Distance_Vector(){
     // cout<<"distance_vector"<<endl;
-    while(!temp.empty()){
-        pair<int,single_dis_vec > cur_node_info = temp.front();
-        temp.pop();
-        int cur_node = cur_node_info.first;
-        single_dis_vec cur_vector_list = cur_node_info.second;
-        map<int,int>::iterator w_iter = weight[cur_node].begin();
-        while (w_iter!=weight[cur_node].end()){
-            int nei_node = w_iter->first;
-            vector<int> update;
-            set<int>::iterator inner_iter = nodes.begin();
-	        while (inner_iter!=nodes.end()){
-                int inner_node= *inner_iter;
-                if(cur_vector_list[inner_node].first<dis_vectors[nei_node][cur_node][inner_node].first){
-                    update.push_back(inner_node);
-                }
-                inner_iter++;
-            }
-            if(update.size() == 0){
-                w_iter++;
-                continue;
-
-            }
-            dis_vectors[nei_node][cur_node] = cur_vector_list;
-            for(int i=0;i<update.size();i++){
-                int cur_update= update[i];
-                if(weight[nei_node][cur_node]+cur_vector_list[cur_update].first<=dis_vectors[nei_node][nei_node][cur_update].first){
-                    dis_vectors[nei_node][nei_node][cur_update].first = weight[nei_node][cur_node]+cur_vector_list[cur_update].first;
-                    if(dis_vectors[nei_node][nei_node][cur_update].second > cur_node){
-                        dis_vectors[nei_node][nei_node][cur_update].second = cur_node;
+    int size= nodes.size();
+    for(int i=0;i<size;i++){
+        set<int>::iterator iter = nodes.begin();
+	    while (iter!=nodes.end())
+	    {  
+            int scr_node=*iter;
+            set<int>::iterator dest_iter = nodes.begin();
+	        while (dest_iter!=nodes.end()){
+                int des_node=*dest_iter;
+                
+                int min_node=forward_table_list[scr_node][des_node].first;
+                int min_cost=forward_table_list[scr_node][des_node].second;
+                set<int>::iterator iter3 = nodes.begin();
+	            while (iter3!=nodes.end()){
+                    int cur_node=*iter3;
+                    if(weight[scr_node][cur_node]>=0 && forward_table_list[cur_node][des_node].second >=0){
+                        if(min_cost<0 ||(weight[scr_node][cur_node]+ forward_table_list[cur_node][des_node].second)<min_cost){
+                            min_node=cur_node;
+                            min_cost=weight[scr_node][cur_node]+ forward_table_list[cur_node][des_node].second;
+                        }
                     }
+                    forward_table_list[scr_node][des_node] = make_pair(min_node,min_cost);
+                    iter3++;
+
                 }
+                dest_iter++;
             }
+            iter++;
 
-            temp.push(make_pair(nei_node, dis_vectors[nei_node][nei_node]));
-            w_iter++;
-        }
-        
+        } 
+
     }
-    set<int>::iterator iter = nodes.begin();
-	while (iter!=nodes.end())
-	{
-        map<int,pair<int,int> > forward_table;
-        int start = *iter;
-        set<int>::iterator inner_iter = nodes.begin();
-        while (inner_iter!=nodes.end()){
-            int end = *inner_iter;
-            forward_table[end].first = dis_vectors[start][start][end].second;
-            forward_table[end].second = dis_vectors[start][start][end].first;
-            inner_iter++;
-        }
-        forward_table_list[start] = forward_table;
-
-        iter++;
-    }
-
-
+    
 }
 
 void fill_output(char* msgfile){
@@ -187,22 +150,22 @@ void fill_output(char* msgfile){
     
 
     // cout<<"write"<<endl;
-    for(int i=1;i<=nodes.size();i++){
-        for(int j=1;j<=nodes.size();j++){
-            if(i==j){
-                fpOut <<i<<" "<<i<<" "<<0<<endl;
-                continue;
-            }
-            if(forward_table_list[i][j].second==INF || nodes.count(i)==0 || nodes.count(j)==0){
-                
-                continue;
-            }
-            else{
-                fpOut << j<<" "<<forward_table_list[i][j].first<<" "<<forward_table_list[i][j].second<<endl;
-            }
+    
+    set<int>::iterator iter = nodes.begin();
+	while (iter!=nodes.end())
+	{  
+        int scr_node=*iter;
+        set<int>::iterator dest_iter = nodes.begin();
+	    while (dest_iter!=nodes.end()){
+            int des_node=*dest_iter;
+
+            fpOut << des_node<<" "<<forward_table_list[scr_node][des_node].first<<" "<<forward_table_list[scr_node][des_node].second<<endl;
+            dest_iter++;
+
         }
         // fpOut<<endl;
 
+        iter++;
     }
     string s;
     ifstream inf;
@@ -270,25 +233,27 @@ void do_change(char* msgfile, char* changefile){
     int a,b,c;
     while(inf>>a>>b>>c){
         // cout<<a<<b<<c<<endl;
-        if(c == -999){
-            weight[a].erase(b);
-            weight[b].erase(a);
-            if (weight.count(a) == 0){
-                nodes.erase(b);
-            }
-        
-            if (weight.count(b) == 0){
-                nodes.erase(a);
-            }
+        weight[a][b] = c;
+        weight[b][a] = c;
+        nodes.insert(a);
+        nodes.insert(b);
+        set<int>::iterator iter = nodes.begin();
+	    while (iter!=nodes.end())
+	    {  
+            int scr_node=*iter;
+            set<int>::iterator dest_iter = nodes.begin();
+	        while (dest_iter!=nodes.end()){
+                int des_node=*dest_iter;
 
+                forward_table_list[scr_node][des_node] = make_pair(des_node,weight[scr_node][des_node]);
+                dest_iter++;
+
+            }
+ 
+
+            iter++;
         }
-        else{
-            weight[a][b] = c;
-            weight[b][a] = c;
-            nodes.insert(a);
-            nodes.insert(b);
-        }
-        forward_table_list.clear();
+        
         
         Distance_Vector();
         

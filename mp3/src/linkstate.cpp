@@ -236,7 +236,7 @@ void fill_output(char* msgfile){
             // cout<<temp.front()<<" ";
             temp.pop();
         }
-        fpOut<<"message "<<msg<<endl;
+        fpOut<<"message  "<<msg<<endl;
         // cout<<msg<<endl;
 
 
@@ -289,3 +289,5 @@ void do_change(char* msgfile, char* changefile){
     inf.close();
     
 }
+
+

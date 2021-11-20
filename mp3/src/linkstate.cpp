@@ -208,7 +208,7 @@ void fill_output(char* msgfile){
         d=s[2];
         a=int(c-'0');
         b=int(d-'0');
-        char msg[len-4];
+        char msg[len-4]="\0";
         for(int i=0;i<len;i++){
             if(i>3){
                 msg[i-4]=s[i];
@@ -217,11 +217,11 @@ void fill_output(char* msgfile){
         }
         
     
-        
+        // cout<<msg<<endl;
 
-        stringstream ss;
-        ss << msg;
-        string message = ss.str();
+        // stringstream ss;
+        // ss << msg;
+        // string message = ss.str();
         // cout<<message<<endl;
         
         // cout<<typeid(a).name()<<endl;
@@ -232,7 +232,7 @@ void fill_output(char* msgfile){
         // cout<<msg<<endl;
 
         if(nodes.count(a) == 0|| nodes.count(b) == 0||forward_table_list[a][b].second == INF){
-            fpOut<< "from "<<a<<" to "<<b<<" cost infinite hops unreachable message "<<message<<endl;
+            fpOut<< "from "<<a<<" to "<<b<<" cost infinite hops unreachable message "<<msg<<endl;
             continue;
         }
         queue<int> temp;
@@ -248,7 +248,7 @@ void fill_output(char* msgfile){
             // cout<<temp.front()<<" ";
             temp.pop();
         }
-        fpOut<<"message "<<message<<endl;
+        fpOut<<"message "<<msg<<endl;
         // cout<<msg<<endl;
 
 

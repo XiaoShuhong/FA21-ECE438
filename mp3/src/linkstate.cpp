@@ -199,23 +199,19 @@ void fill_output(char* msgfile){
     string s;
     ifstream inf;
     int a,b;
-    char c,d;
+    string msg;
     inf.open(msgfile);
     while (getline(inf, s)){
-        int len=s.length();
+        
         // cout<<len<<endl;
-        c=s[0];
-        d=s[2];
-        a=int(c-'0');
-        b=int(d-'0');
-        char msg[len-4];
-	memset(msg,0,sizeof(msg));
-        for(int i=0;i<len;i++){
-            if(i>3){
-                msg[i-4]=s[i];
-            }
+        
+        sscanf(s.c_str(), "%d %d %*s", &a, &b);
+        msg=s.substr(s.find(" "));
+        msg = msg.substr(s.find(" ") + 1);
 
-        }
+        
+
+        // cout<<a<<b<<msg<<endl;
         
     
         // cout<<msg<<endl;

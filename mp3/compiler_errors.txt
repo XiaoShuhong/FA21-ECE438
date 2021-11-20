@@ -1,0 +1,10 @@
+compilation of version 6 failed with:
+mkdir -p obj
+g++ -g -Wall -Wextra -Wno-sign-compare -std=c++11 -c -o obj/linkstate.o src/linkstate.cpp
+src/linkstate.cpp: In function ‘void fill_output(char*)’:
+src/linkstate.cpp:211:25: error: variable-sized object ‘msg’ may not be initialized
+         char msg[len-4]="\0";
+                         ^
+make: *** [obj/linkstate.o] Error 1
+ 
+

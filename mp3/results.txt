@@ -20,10 +20,8 @@ test results:
  DV: 8 node topology succeeded!
 ====================
 
-version:5
+version:7
 score: 50/100
 all-time best score (your current grade): 50/100
 
 
-Version 6:
-*******CHECK compiler_errors.txt FOR RESULTS!!!******

@@ -208,7 +208,8 @@ void fill_output(char* msgfile){
         d=s[2];
         a=int(c-'0');
         b=int(d-'0');
-        char msg[len-4]="\0";
+        char msg[len-4];
+	memset(msg,0,sizeof(msg));
         for(int i=0;i<len;i++){
             if(i>3){
                 msg[i-4]=s[i];

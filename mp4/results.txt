@@ -4,15 +4,15 @@ test results:
 -10:  Two node scenario has an error
 -10:  Two node collision scenario has an error
 -10:  Two node packet fail scenario has an error
--10:  Sample input scenario has an error
+ Sample input succeeded!
 -10:  Sample input long period scenario has an error
 -10:  Ten nodes heavy collision scenario has an error
--10:  Ten nodes scenario has an error
+ Ten nodes scenario succeeded!
  Ten nodes long period scenario succeeded!
 ====================
 
-version:1
-score: 10/100
-all-time best score (your current grade): 10/100
+version:2
+score: 30/100
+all-time best score (your current grade): 30/100
 
 

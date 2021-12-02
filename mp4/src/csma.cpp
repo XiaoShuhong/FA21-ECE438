@@ -128,6 +128,7 @@ void simulation(){
 
             }   
             else if(collision_nodes.size()==1){
+		packet_trans+=1;
                 channelOccupied=1;
                 trans_time=L-1;
                 nodes[collision_nodes[0]].collision_count=0;
@@ -143,7 +144,7 @@ void simulation(){
 
         }
         if(trans_time==0){
-            packet_trans+=1;
+            //packet_trans+=1;
             cout<<"node "<<reset_nodes[0]<<" finish trans"<<endl;
             nodes[reset_nodes[0]].R_idx=0;
             nodes[reset_nodes[0]].backoff=randtime( nodes[reset_nodes[0]].node_idx,cur_tick+1,random_time[ nodes[reset_nodes[0]].R_idx]);

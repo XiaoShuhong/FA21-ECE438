@@ -67,7 +67,7 @@ void initialize(char* inputfile){
     char n,l,m,r,t;
     inf>>n>>N>>l>>L>>m>>M>>r;
     // cout<<N<<L<<M<<endl;
-    for(int i=0;i<6;i++){
+    for(int i=0;i<M;i++){
         inf>>R;
         random_time.push_back(R);
         // cout<<R<<endl;

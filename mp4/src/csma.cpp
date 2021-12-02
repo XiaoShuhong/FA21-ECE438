@@ -26,7 +26,7 @@ int N,L,M,R,T;
 
 int channelOccupied;
 int cur_tick;
-int packet_trans;
+int tick_trans;
 int trans_time;
 void initialize(char* inputfile);
 void simulation();
@@ -46,9 +46,9 @@ int main(int argc, char** argv) {
     
     initialize(argv[1]);
     channelOccupied=0;
-    packet_trans=0;
+    tick_trans=0;
     simulation();
-    float util_time=1.0*packet_trans*L/T;
+    float util_time=1.0*tick_trans/T;
     // cout<<packet_trans<<endl;
     // cout<<setprecision(2)<<util_time<<endl;
     fprintf(fpOut,"%.2f\n",util_time);
@@ -116,6 +116,7 @@ void simulation(){
        
         if(channelOccupied==1){
             trans_time-=1;
+	    tick_trans+=1;
             
 
 
@@ -128,7 +129,8 @@ void simulation(){
 
             }   
             else if(collision_nodes.size()==1){
-		packet_trans+=1;
+		//packet_trans+=1;
+		tick_trans+=1;
                 channelOccupied=1;
                 trans_time=L-1;
                 nodes[collision_nodes[0]].collision_count=0;

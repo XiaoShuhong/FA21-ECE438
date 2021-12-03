@@ -28,6 +28,7 @@ int channelOccupied;
 int cur_tick;
 int tick_trans;
 int trans_time;
+int coll_reset;
 void initialize(char* inputfile);
 void simulation();
 int randtime(int id, int cur_tick, int r);
@@ -47,6 +48,7 @@ int main(int argc, char** argv) {
     initialize(argv[1]);
     channelOccupied=0;
     tick_trans=0;
+    coll_reset=0;
     simulation();
     float util_time=1.0*tick_trans/T;
     // cout<<packet_trans<<endl;
@@ -90,7 +92,7 @@ void simulation(){
     for(int i=0;i<T;i++){
         cur_tick=i;
         cout<<"now at time "<<cur_tick<<endl;
-        check_backoff();
+        // check_backoff();
 //   ///////////////////   
         // cout<<"current tick is: "<<cur_tick<<endl;
         // if(channelOccupied==1){
@@ -115,14 +117,31 @@ void simulation(){
     ///////////////////////////
        
         if(channelOccupied==1){
-            trans_time-=1;
-	    tick_trans+=1;
-            
+            if(trans_time>0){
+                trans_time-=1;
+	            tick_trans+=1;
+                continue;
+            }
+            if(trans_time==0){
+            //packet_trans+=1;
+            cout<<"node "<<reset_nodes[0]<<" finish trans"<<endl;
+            nodes[reset_nodes[0]].R_idx=0;
+            nodes[reset_nodes[0]].backoff=randtime( nodes[reset_nodes[0]].node_idx,cur_tick,random_time[ nodes[reset_nodes[0]].R_idx]);
+            nodes[reset_nodes[0]].collision_count=0;
+            cout<<"reset backoff for node "<<reset_nodes[0]<<" value is "<<nodes[reset_nodes[0]].backoff<<" at time "<<cur_tick<<endl;
+            reset_nodes.clear();
+            channelOccupied=0;
 
+            }
 
 
         }
-        else {
+        if(coll_reset==1){
+            collision_trigger();
+            coll_reset=0;
+        }
+        check_backoff();
+        if(channelOccupied==0) {
             if(collision_nodes.size()==0){
                 decrease_all_backoff();
                 continue;
@@ -130,7 +149,7 @@ void simulation(){
             }   
             else if(collision_nodes.size()==1){
 		//packet_trans+=1;
-		tick_trans+=1;
+		        tick_trans+=1;
                 channelOccupied=1;
                 trans_time=L-1;
                 nodes[collision_nodes[0]].collision_count=0;
@@ -140,22 +159,22 @@ void simulation(){
 
             }
             else if(collision_nodes.size()>1){
-                collision_trigger();
+                coll_reset=1;
                 continue;
             }
 
         }
-        if(trans_time==0){
-            //packet_trans+=1;
-            cout<<"node "<<reset_nodes[0]<<" finish trans"<<endl;
-            nodes[reset_nodes[0]].R_idx=0;
-            nodes[reset_nodes[0]].backoff=randtime( nodes[reset_nodes[0]].node_idx,cur_tick+1,random_time[ nodes[reset_nodes[0]].R_idx]);
-            nodes[reset_nodes[0]].collision_count=0;
-            cout<<"reset backoff for node "<<reset_nodes[0]<<" value is "<<nodes[reset_nodes[0]].backoff<<" at time "<<cur_tick<<endl;
-            reset_nodes.clear();
-            channelOccupied=0;
+        // if(trans_time==0){
+        //     //packet_trans+=1;
+        //     cout<<"node "<<reset_nodes[0]<<" finish trans"<<endl;
+        //     nodes[reset_nodes[0]].R_idx=0;
+        //     nodes[reset_nodes[0]].backoff=randtime( nodes[reset_nodes[0]].node_idx,cur_tick+1,random_time[ nodes[reset_nodes[0]].R_idx]);
+        //     nodes[reset_nodes[0]].collision_count=0;
+        //     cout<<"reset backoff for node "<<reset_nodes[0]<<" value is "<<nodes[reset_nodes[0]].backoff<<" at time "<<cur_tick<<endl;
+        //     reset_nodes.clear();
+        //     channelOccupied=0;
 
-        }
+        // }
         
         
     }
@@ -186,16 +205,20 @@ void decrease_all_backoff(){
 }
 
 void collision_trigger(){
+    
+  
     for(int i=0; i<collision_nodes.size();i++){
         nodes[collision_nodes[i]].collision_count+=1;
-        if(nodes[collision_nodes[i]].collision_count>=6){
+        if(nodes[collision_nodes[i]].collision_count>=M){
             nodes[collision_nodes[i]].collision_count=0;
             nodes[collision_nodes[i]].R_idx=0;
-            nodes[collision_nodes[i]].backoff=randtime(nodes[collision_nodes[i]].node_idx,cur_tick+1,random_time[nodes[collision_nodes[i]].R_idx]);
+            nodes[collision_nodes[i]].backoff=randtime(nodes[collision_nodes[i]].node_idx,cur_tick,random_time[nodes[collision_nodes[i]].R_idx]);
+            cout<<"backoff "<<nodes[collision_nodes[i]].backoff<<" node"<<collision_nodes[i]<<" count "<<nodes[collision_nodes[i]].collision_count<<endl;
         }
         else{
             nodes[collision_nodes[i]].R_idx+=1;
-            nodes[collision_nodes[i]].backoff=randtime(nodes[collision_nodes[i]].node_idx,cur_tick+1,random_time[nodes[collision_nodes[i]].R_idx]);
+            nodes[collision_nodes[i]].backoff=randtime(nodes[collision_nodes[i]].node_idx,cur_tick,random_time[nodes[collision_nodes[i]].R_idx]);
+            cout<<"backoff "<<nodes[collision_nodes[i]].backoff<<" node"<<collision_nodes[i]<<" count "<<nodes[collision_nodes[i]].collision_count<<endl;
         }
         cout<<"set node "<<collision_nodes[i]<<" collision_count become "<< nodes[collision_nodes[i]].collision_count<<"; new backoff become "<<nodes[collision_nodes[i]].backoff<<endl;
     }
